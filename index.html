@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #0CC0DF; /* Background color */
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 40%;
+            max-width: 800px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Shadow */
+            padding: 20px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 5px solid #0CC0DF; /* Outer blue border color */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .qa-box {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .question {
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .answer {
+            font-size: 1.2em;
+            color: #555;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3); /* Text shadow */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img id="quizImage" src="https://i.imgur.com/78alVrU.png" alt="Quiz Image">
+        <div class="qa-box">
+            <div id="question" class="question">Click the image to get a question!</div>
+            <div id="answer" class="answer"></div>
+        </div>
+    </div>
+    
+    <script>
+        const questionsAndAnswers = [
+            { question: "Who is considered the father of hip-hop?", answer: "DJ Kool Herc" },
+            { question: "What year is widely regarded as the birth year of hip-hop?", answer: "1973" },
+            { question: "Which hip-hop group released the song 'Rapper's Delight'?", answer: "The Sugarhill Gang" },
+            { question: "Which rapper released the iconic album 'Illmatic'?", answer: "Nas" },
+            { question: "Who was the first solo rapper to win a Grammy Award?", answer: "Will Smith (then known as The Fresh Prince)" },
+            { question: "Which 2Pac song became a major anthem of the West Coast rap scene?", answer: "'California Love'" },
+            { question: "Which album is considered Dr. Dre's magnum opus?", answer: "'The Chronic'" },
+            { question: "What year did Public Enemy release 'It Takes a Nation of Millions to Hold Us Back'?", answer: "1988" },
+            { question: "Which rapper was known as 'The Notorious B.I.G.'?", answer: "Christopher Wallace" },
+            { question: "Which rapper is known for hits like 'Hotline Bling' and 'God's Plan'?", answer: "Drake" },
+            { question: "Which female rapper was the first to chart a number one single on the Billboard Hot 100?", answer: "Lauryn Hill" },
+            { question: "Which group is considered one of the pioneers of conscious hip-hop?", answer: "A Tribe Called Quest" },
+            { question: "What album by Kanye West changed the sound of hip-hop in 2010?", answer: "'My Beautiful Dark Twisted Fantasy'" },
+            { question: "Which rapper created the term 'Bling Bling'?", answer: "Lil Wayne (with the Hot Boys)" },
+            { question: "What city is known as the birthplace of Southern hip-hop?", answer: "Atlanta" },
+            { question: "Which rapper had a breakout hit with 'In Da Club'?", answer: "50 Cent" },
+            { question: "Which artist released 'To Pimp a Butterfly' in 2015?", answer: "Kendrick Lamar" },
+            { question: "What was the name of Jay-Z's first album?", answer: "'Reasonable Doubt'" },
+            { question: "Which hip-hop duo released 'Stankonia'?", answer: "OutKast" },
+            { question: "Who is often credited with bringing gangsta rap to the mainstream?", answer: "N.W.A" },
+            { question: "Which rapper famously feuded with Jay-Z in the early 2000s?", answer: "Nas" },
+            { question: "What is the title of Cardi B's chart-topping debut album?", answer: "'Invasion of Privacy'" },
+            { question: "Which rapper released the album 'Get Rich or Die Tryin''?", answer: "50 Cent" },
+            { question: "Which iconic rapper was a founding member of the group N.W.A?", answer: "Ice Cube" },
+            { question: "Which city is credited with pioneering drill music?", answer: "Chicago" },
+            { question: "Which rapper's real name is Sean Combs?", answer: "Diddy (formerly Puff Daddy)" },
+            { question: "Which artist made the song 'Stan' popular in 2000?", answer: "Eminem" },
+            { question: "What is the name of the record label founded by Master P?", answer: "No Limit Records" },
+            { question: "Which female artist brought Houston rap to mainstream with hits like 'Savage'?", answer: "Megan Thee Stallion" },
+            { question: "Which album did J. Cole release in 2014 that garnered widespread critical acclaim?", answer: "'2014 Forest Hills Drive'" },
+            { question: "Which rapper was the first hip-hop artist to headline Coachella?", answer: "Dr. Dre" },
+            { question: "What was the name of the supergroup featuring Kanye West, Jay-Z, and Rihanna?", answer: "Watch the Throne" },
+            { question: "Which rapper helped popularize trap music in the 2010s?", answer: "Gucci Mane" },
+            { question: "Which song by Childish Gambino won the Grammy for Record of the Year?", answer: "'This Is America'" },
+            { question: "Which rapper released the 2018 album 'Astroworld'?", answer: "Travis Scott" },
+            { question: "Who was the first female rapper to have a diamond-certified single?", answer: "Cardi B" },
+            { question: "Which rap group had a breakout hit with 'Fight The Power'?", answer: "Public Enemy" },
+            { question: "What 2016 hit song by Rae Sremmurd became a viral sensation?", answer: "'Black Beatles'" },
+            { question: "What is Lil Wayne's real name?", answer: "Dwayne Michael Carter Jr." },
+            { question: "Which rapper is associated with the 2019 hit 'Old Town Road'?", answer: "Lil Nas X" },
+            { question: "Which hip-hop group was famous for the hit 'Nuthin' but a 'G' Thang'?", answer: "Dr. Dre and Snoop Dogg" },
+            { question: "What was the first album by Cardi B?", answer: "'Invasion of Privacy'" },
+            { question: "Which rapper collaborated with Rihanna for the song 'Umbrella'?", answer: "Jay-Z" },
+            { question: "Which rapper released the song 'Mo Money Mo Problems'?", answer: "The Notorious B.I.G." },
+            { question: "Which rapper released the song 'Bodak Yellow'?", answer: "Cardi B" },
+            { question: "What is the name of the 2020 song by Megan Thee Stallion featuring Beyoncé?", answer: "'Savage Remix'" },
+            { question: "Which rapper popularized the term 'trap music'?", answer: "T.I." },
+            { question: "Who is credited with creating the G-Funk sound?", answer: "Dr. Dre" },
+            { question: "Which rapper is known for his album 'The Marshall Mathers LP'?", answer: "Eminem" },
+            { question: "Which rapper starred in the movie '8 Mile'?", answer: "Eminem" },
+            { question: "Which rapper's debut album was titled 'Thank Me Later'?", answer: "Drake" },
+            { question: "Which rapper founded the label GOOD Music?", answer: "Kanye West" },
+            { question: "What 2015 album by Drake became a commercial success?", answer: "'If You're Reading This It's Too Late'" },
+            { question: "What city is considered the birthplace of hip-hop?", answer: "The Bronx, New York" },
+            { question: "Who released the 2018 hit 'Sicko Mode'?", answer: "Travis Scott" },
+            { question: "What was Jay-Z's first number one album?", answer: "'Vol. 2... Hard Knock Life'" },
+            { question: "Which rapper's real name is Kendrick Lamar Duckworth?", answer: "Kendrick Lamar" },
+            { question: "Which artist won the first-ever Grammy for Best Rap Album?", answer: "DJ Jazzy Jeff & The Fresh Prince" }
+        ];
+
+        document.getElementById('quizImage').addEventListener('click', function() {
+            const randomIndex = Math.floor(Math.random() * questionsAndAnswers.length);
+            const question = questionsAndAnswers[randomIndex].question;
+            const answer = questionsAndAnswers[randomIndex].answer;
+
+            document.getElementById('question').textContent = question;
+            document.getElementById('answer').textContent = answer;
+        });
+    </script>
+</body>
+</html>
